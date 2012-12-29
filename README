@@ -1,0 +1,16 @@
+SUMMARY
+=======
+
+A small python application that uses the serial port of a Jeelink or some other serially attached Arduino with a RFM12b module to recieve dat afrom remote RFM12B units using the OpenEnergyMonitor/TinyTX protocol.
+
+INSTALL
+=======
+
+mkdir /usr/local/mqtt-rfm12b/ /etc/mqtt-rfm12b/
+cd /usr/local/
+git clone git://github.com/kylegordon/mqtt-rfm12b.git
+cp mqtt-rfm12b.init /etc/init.d/mqtt-rfm12b
+update-rc.d mqtt-rfm12b defaults
+cp mqtt-rfm12b.default /etc/default/mqtt-rfm12b
+/etc/init.d/mqtt-rfm12b start
+
