@@ -1,7 +1,15 @@
 SUMMARY
 =======
 
-A small python application that uses the serial port of a Jeelink or some other serially attached Arduino with a RFM12b module to recieve dat afrom remote RFM12B units using the OpenEnergyMonitor/TinyTX protocol.
+A small python application that uses the serial port of a Jeelink or some other serially attached Arduino with a RFM12b module to recieve data from remote RFM12B units using the OpenEnergyMonitor/TinyTX protocol.
+It will read a list of integers from the incoming data packet, split them into their individual components, divide by 100, and publish the results against the topic name, with the node ID as the last part of the topic.
+
+ie, 2 integers from node 4, with data of 2108 and 3303 (temperature and supply voltage for example) will be published as
+
+/foo/bar/4/1 21.08
+/foo/bar/4/2 33.03
+
+This payload structure is as used by TinyTX and OpenEnergyMonitor
 
 INSTALL
 =======
