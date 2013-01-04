@@ -10,6 +10,7 @@ import logging
 import signal
 import socket
 import time
+import serial
 import sys
 
 import mosquitto
@@ -70,6 +71,12 @@ def connect():
 
     mqttc.subscribe(MQTT_TOPIC, 2)
 
+def open_serial(port,speed):
+    """
+    Open the serial port
+    """
+    ser = serial.Serial('/dev/ttyUSB0', 57600)
+
 def on_connect(result_code):
      """
      Handle connections (or failures) to the broker.
@@ -108,12 +115,27 @@ def main_loop():
     The main loop in which we stay connected to the broker
     """
     while mqttc.loop() == 0:
-        logging.debug("Looping")
+        msg = ser.readline();
+        items = msg.split()
+        print "0th element is " + items[0]
+        if (items[0] == "OK"):
+                items = msg.split()
+                print "Recieved a list of " + str(len(items)) + " items from node " + str(items[1]) + ". Checksum " + str(items[len(items)-1])
+                print items
+                for pair in range(2,len(items),2):
+                        #print "Pair is %s" % str(pair)
+                        #print str(items[pair]) + str(items[pair+1])
+                        pairone = int(items[pair]) + (int(items[pair+1]) * 256)
+                        if (pairone > 32768):
+                                pairone = -65536 + pairone
+                        pairone = pairone / 100.000
+                        print "Value is %s" % str(pairone)
 
 # Use the signal module to handle signals
 signal.signal(signal.SIGTERM, cleanup)
 signal.signal(signal.SIGINT, cleanup)
 
-# Connect to the broker and enter the main loop
+# Connect to the broker, open the serial port, and enter the main loop
 connect()
+open_serial("/dev/ttyUSB0", 57600)
 main_loop()
