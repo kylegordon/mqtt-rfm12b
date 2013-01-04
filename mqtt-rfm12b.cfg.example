@@ -1,7 +1,8 @@
 [global]
 DEBUG = True
 LOGFILE = /var/log/mqtt-rfm12b.log
-METERSOURCE = /var/lib/meter
+SERIAL = /dev/ttyUSB0
+BAUD = 57600
 MQTT_HOST = 10.8.0.1
 MQTT_PORT = 1883
-MQTT_SUBTOPIC = /electricitymeterpulsecounter/watts
+MQTT_SUBTOPIC = /rfm12b/
