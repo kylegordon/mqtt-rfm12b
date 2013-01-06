@@ -118,18 +118,19 @@ def main_loop():
     while mqttc.loop() == 0:
 	msg = ser.readline()
 	items = msg.split()
-	print "0th element is " + items[0]
-        if (items[0] == "OK"):
-	    print "Recieved a list of " + str(len(items)) + " items from node " + str(items[1]) + ". Checksum " + str(items[len(items)-1])
-	    print items
-	    for pair in range(2,len(items),2):
-	        #print "Pair is %s" % str(pair)
-	        #print str(items[pair]) + str(items[pair+1])
-	        pairone = int(items[pair]) + (int(items[pair+1]) * 256)
-                if (pairone > 32768):
-                    pairone = -65536 + pairone
-                pairone = pairone / 100.000
-                mqttc.publish(MQTT_TOPIC + str(pair/2), str(pairone))
+        try:
+            logging.debug("0th element is %s", items[0])
+            if (items[0] == "OK"):
+	        logging.debug("Received a list of " + str(len(items)) + " items from node " + str(items[1]) + ". Checksum " + str(items[len(items)-1]))
+	        logging.debug(items)
+	        for pair in range(2,len(items),2):
+	            pairone = int(items[pair]) + (int(items[pair+1]) * 256)
+                    if (pairone > 32768):
+                        pairone = -65536 + pairone
+                    pairone = pairone / 100.000
+                    mqttc.publish(MQTT_TOPIC + str(pair/2), str(pairone))
+	except IndexError:
+		logging.info("Caught a null line. Nothing to worry about")
 
 # Use the signal module to handle signals
 signal.signal(signal.SIGTERM, cleanup)
