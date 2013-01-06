@@ -25,8 +25,8 @@ DEBUG = config.getboolean("global", "debug")
 LOGFILE = config.get("global", "logfile")
 MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
-
-MQTT_TOPIC="/raw/" + socket.getfqdn() + config.get("global", "MQTT_SUBTOPIC")
+MQTT_SUBTOPIC = config.get("global", "MQTT_SUBTOPIC")
+MQTT_TOPIC = "/raw/" + socket.getfqdn() + "MQTT_SUBTOPIC"
 
 client_id = "rfm12b_%d" % os.getpid()
 mqttc = mosquitto.Mosquitto(client_id)
@@ -49,7 +49,7 @@ def cleanup(signum, frame):
      """
      logging.info("Disconnecting from broker")
      # FIXME - This status topis too far up the hierarchy.
-     mqttc.publish("/status/" + socket.getfqdn(), "Offline")
+     mqttc.publish("/status/" + socket.getfqdn() + MQTT_SUBTOPIC, "Offline")
      mqttc.disconnect()
      logging.info("Exiting on signal %d", signum)
      sys.exit(signum)
@@ -85,7 +85,7 @@ def on_connect(result_code):
      ## FIXME - needs fleshing out http://mosquitto.org/documentation/python/
      if result_code == 0:
         logging.info("Connected to broker")
-        mqttc.publish("/status/" + socket.getfqdn(), "Online")
+        mqttc.publish("/status/" + socket.getfqdn() + MQTT_SUBTOPIC, "Online")
      else:
         logging.warning("Something went wrong")
         cleanup()
@@ -116,21 +116,21 @@ def main_loop():
     The main loop in which we stay connected to the broker
     """
     while mqttc.loop() == 0:
-	msg = ser.readline()
-	items = msg.split()
+        msg = ser.readline()
+        items = msg.split()
         try:
             logging.debug("0th element is %s", items[0])
             if (items[0] == "OK"):
-	        logging.debug("Received a list of " + str(len(items)) + " items from node " + str(items[1]) + ". Checksum " + str(items[len(items)-1]))
-	        logging.debug(items)
-	        for pair in range(2,len(items),2):
-	            pairone = int(items[pair]) + (int(items[pair+1]) * 256)
+                logging.debug("Received a list of " + str(len(items)) + " items from node " + str(items[1]) + ". Checksum " + str(items[len(items)-1]))
+                logging.debug(items)
+                for pair in range(2,len(items),2):
+                    pairone = int(items[pair]) + (int(items[pair+1]) * 256)
                     if (pairone > 32768):
                         pairone = -65536 + pairone
                     pairone = pairone / 100.000
                     mqttc.publish(MQTT_TOPIC + str(pair/2), str(pairone))
-	except IndexError:
-		logging.info("Caught a null line. Nothing to worry about")
+        except IndexError:
+            logging.info("Caught a null line. Nothing to worry about")
 
 # Use the signal module to handle signals
 signal.signal(signal.SIGTERM, cleanup)
