@@ -119,7 +119,7 @@ def main_loop():
         msg = ser.readline()
         items = msg.split()
         try:
-            logging.debug("0th element is %s", items[0])
+            logging.debug("items list is %s", items)
             if (items[0] == "OK"):
                 logging.debug("Received a list of " + str(len(items)) + " items from node " + str(items[1]) + ". Checksum " + str(items[len(items)-1]))
                 logging.debug(items)
