@@ -78,19 +78,32 @@ def open_serial(port,speed):
     global ser
     ser = serial.Serial('/dev/ttyUSB0', 57600)
 
-def on_connect(result_code):
+def on_connect(mosq, obj, result_code):
      """
      Handle connections (or failures) to the broker.
      """
-     ## FIXME - needs fleshing out http://mosquitto.org/documentation/python/
+     ## These return codes are defined at http://mosquitto.org/documentation/python/
+
      if result_code == 0:
         logging.info("Connected to broker")
         mqttc.publish("/status/" + socket.getfqdn() + MQTT_SUBTOPIC, "Online")
      else:
-        logging.warning("Something went wrong")
+        if result_code == 1:
+            logging.warning("Unacceptable protocol version")
+        elif result_code == 2:
+            logging.warning("Identifier rejected")
+        elif result_code == 3:
+            logging.warning("Server unavailable")
+        elif result_code == 4:
+            logging.warning("Bad username or password")
+        elif result_code == 5:
+            logging.warning("Not authorised")
+        else:
+            logging.warning("Something went wrong")
+            logging.warning("Return code was %s", result_code)
         cleanup()
 
-def on_disconnect(result_code):
+def on_disconnect(mosq, obj, result_code):
      """
      Handle disconnections from the broker
      """
