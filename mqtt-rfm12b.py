@@ -78,7 +78,7 @@ def open_serial(port,speed):
     global ser
     ser = serial.Serial('/dev/ttyUSB0', 57600)
 
-def on_connect(mosq, obj, result_code):
+def on_connect(obj, result_code):
      """
      Handle connections (or failures) to the broker.
      """
@@ -103,7 +103,7 @@ def on_connect(mosq, obj, result_code):
             logging.warning("Return code was %s", result_code)
         cleanup()
 
-def on_disconnect(mosq, obj, result_code):
+def on_disconnect(result_code):
      """
      Handle disconnections from the broker
      """
