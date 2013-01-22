@@ -26,7 +26,7 @@ LOGFILE = config.get("global", "logfile")
 MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
 MQTT_SUBTOPIC = config.get("global", "MQTT_SUBTOPIC")
-MQTT_TOPIC = "/raw/" + socket.getfqdn() + "MQTT_SUBTOPIC"
+MQTT_TOPIC = "/raw/" + socket.getfqdn() + MQTT_SUBTOPIC
 
 client_id = "rfm12b_%d" % os.getpid()
 mqttc = mosquitto.Mosquitto(client_id)
