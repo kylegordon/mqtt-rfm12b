@@ -141,7 +141,7 @@ def main_loop():
                     if (pairone > 32768):
                         pairone = -65536 + pairone
                     pairone = pairone / 100.000
-                    mqttc.publish(MQTT_TOPIC + str(pair/2), str(pairone))
+                    mqttc.publish(MQTT_TOPIC + items[1] + "/" + str(pair/2), str(pairone))
         except IndexError:
             logging.info("Caught a null line. Nothing to worry about")
 
