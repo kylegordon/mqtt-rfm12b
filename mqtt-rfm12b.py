@@ -23,6 +23,8 @@ config.read("/etc/mqtt-rfm12b/mqtt-rfm12b.cfg")
 # Use ConfigParser to pick out the settings
 DEBUG = config.getboolean("global", "debug")
 LOGFILE = config.get("global", "logfile")
+SERIAL = config.get("global", "serial")
+BAUD = config.get("global", "baud")
 MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
 MQTT_SUBTOPIC = config.get("global", "MQTT_SUBTOPIC")
@@ -251,7 +253,7 @@ signal.signal(signal.SIGTERM, cleanup)
 signal.signal(signal.SIGINT, cleanup)
 
 # Connect to the broker, open the serial port, and enter the main loop
-open_serial("/dev/ttyUSB0", 57600)
+open_serial(SERIAL, BAUD)
 connect()
 # Try to start the main loop
 try:
