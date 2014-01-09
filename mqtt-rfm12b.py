@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 __author__ = "Kyle Gordon"
 __copyright__ = "Copyright (C) Kyle Gordon"
 
-import mosquitto
 import os
 import logging
 import signal
@@ -28,7 +28,7 @@ BAUD = config.get("global", "baud")
 MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
 MQTT_SUBTOPIC = config.get("global", "MQTT_SUBTOPIC")
-MQTT_TOPIC = "/raw/" + socket.getfqdn() + "MQTT_SUBTOPIC"
+MQTT_TOPIC = "/raw/" + socket.getfqdn() + MQTT_SUBTOPIC
 
 APPNAME = "mqtt-rfm12b"
 PRESENCETOPIC = "clients/" + socket.getfqdn() + "/" + APPNAME + "/state"
@@ -197,7 +197,6 @@ def process_connection():
     """
     logging.debug("Processing connection")
 
-
 def process_message(msg):
     """
     What to do with the message that's arrived
@@ -230,7 +229,7 @@ def main_loop():
         msg = ser.readline()
         items = msg.split()
         try:
-            logging.debug("0th element is %s", items[0])
+            logging.debug("items list is %s", items)
             if (items[0] == "OK"):
                 logging.debug("Received a list of "
                               + str(len(items))
@@ -244,7 +243,7 @@ def main_loop():
                     if (pairone > 32768):
                         pairone = -65536 + pairone
                     pairone = pairone / 100.000
-                    mqttc.publish(MQTT_TOPIC + str(pair/2), str(pairone))
+                    mqttc.publish(MQTT_TOPIC + items[1] + "/" + str(pair/2), str(pairone))
         except IndexError:
             logging.info("Caught a null line. Nothing to worry about")
 
