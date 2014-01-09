@@ -20,5 +20,7 @@ sudo git clone http://github.com/kylegordon/mqtt-rfm12b.git /usr/local/mqtt-rfm1
 sudo cp /usr/local/mqtt-rfm12b/mqtt-rfm12b.init /etc/init.d/mqtt-rfm12b
 sudo update-rc.d mqtt-rfm12b defaults
 sudo cp /usr/local/mqtt-rfm12b/mqtt-rfm12b.default /etc/default/mqtt-rfm12b
+sudo cp /usr/local/mqtt-rfm12b/mqtt-rfm12b.cfg.example /etc/mqtt-rfm12b/mqtt-rfm12b.cfg
+# Edit the above to suit
 sudo /etc/init.d/mqtt-rfm12b start
 
